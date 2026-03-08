@@ -1,7 +1,12 @@
 <!doctype html>
 <meta charset="utf-8">
 <script>
-location='https://webhook.site/3bb19ee6-2a5a-47a2-8f05-516b47c0a700?s=controller_loaded'
+const hook = 'https://webhook.site/3bb19ee6-2a5a-47a2-8f05-516b47c0a700';
+(new Image()).src = hook + '?s=controller_loaded';
+
+const w = open('about:blank');
+(new Image()).src = hook + '?s=' + (w ? 'popup_ok' : 'popup_blocked');
 </script>
+
 
 
