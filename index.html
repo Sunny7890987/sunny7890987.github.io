@@ -11,7 +11,7 @@
 <script>
 const WORKER_BASE = "https://flat-unit-aed6.xxterenerertxx.workers.dev/";
 const TARGET_ORIGIN = "http://localhost:5000";
-const TARGET_USER_ID = "1c1b6af3-ad0c-458c-a86f-0d5efeee9851";
+const TARGET_USER_ID = "0331f605-be5c-485a-bd56-ca41a0871451";
 
 const logEl = document.getElementById("log");
 function log(...xs) {
@@ -108,8 +108,8 @@ navVictim();
 
 // 這裡不要太慢，也不要太快
 // 2-char/round 後，60~80ms 通常比上一版 35ms 更穩
-navTimer = setInterval(navVictim, 500);
-pollTimer = setInterval(poll, 500);
+navTimer = setInterval(navVictim, 10000);
+pollTimer = setInterval(poll, 10000);
 </script>
 </body>
 </html>
