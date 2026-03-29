@@ -14,7 +14,7 @@ const TARGET_ORIGIN = "http://localhost:5000";
 const TARGET_USER_ID = "95508c88-6b7f-4d85-a253-b01f3eb1c4ed";
 
 // 每次 report 都換一個新的 id
-const id = "run001";
+const id = "run002";
 
 const logEl = document.getElementById("log");
 function log(...xs) {
@@ -103,7 +103,7 @@ navVictim();
 poll();
 
 // 1-char slim worker 比較適合放慢一點，但不能慢到超過 bot 停留時間
-navTimer = setInterval(navVictim, 800);
+navTimer = setInterval(navVictim, 350);
 pollTimer = setInterval(poll, 150);
 </script>
 </body>
